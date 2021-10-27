@@ -1,0 +1,2 @@
+[hcme]
+DATABASE_URL = "postgres:///hcme"
