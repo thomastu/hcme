@@ -12,7 +12,9 @@ class TAZ(Base):
 
     name = sa.Column(sa.String(255), nullable=False, unique=True)
 
-    geometry = sa.Column(Geometry("POLYGON", srid=4326, spatial_index=False))
+    geometry = sa.Column(
+        Geometry("MULTIPOLYGON", srid=4326, spatial_index=False), nullable=False
+    )
 
 
 # Spatial Index on Geometry

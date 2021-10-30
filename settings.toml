@@ -1,2 +1,8 @@
 [hcme]
-DATABASE_URL = "postgres:///hcme"
+DATABASE_URL = "postgresql:///hcme"
+INPUT_DIR = "./data/inputs/"
+OUTPUT_DIR = "./data/output/"
+
+    [hcme.input_files]
+    apns = "apns.csv"
+    aggregated_tazs = "aggregated-taz.kml"

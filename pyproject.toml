@@ -21,6 +21,10 @@ invoke = "^1.6.0"
 click = "^8.0.1"
 psycopg2-binary = "^2.9.1"
 ipykernel = "^6.4.1"
+tabulate = "^0.8.9"
+vega = "^3.5.0"
+Fiona = "^1.8.20"
+geopandas = "^0.10.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
