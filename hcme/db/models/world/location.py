@@ -8,17 +8,35 @@ class Location(Base):
 
     __tablename__ = "locations"
 
-    coordinates = sa.Column(Geometry("POINT", spatial_index=False, srid=4326))
+    parcel_id = sa.Column(sa.String, unique=True, nullable=False)
 
-    area = sa.Column(sa.Float, nullable=False)
+    coordinates = sa.Column(
+        Geometry("POINT", spatial_index=False, srid=4326), nullable=False
+    )
 
-    # FK to TAZ
+    use = sa.Column(sa.String(50), nullable=False)
+
+    parcel_type = sa.Column(sa.String(50), nullable=False)
+
+    zone_type = sa.Column(sa.String(50), nullable=True)
+
+    residential = sa.Column(sa.Boolean, nullable=False, default=False)
+
+    # Weighting for selection.  For residential parcels, this will represent liklihood
+    # of selection.  For commercial parcels, will represent liklihood of trip destination.
+    weight = sa.Column(sa.Float, nullable=False, default=1)
+
+    # Foreign keys
     taz_id = sa.Column(sa.Integer, sa.ForeignKey("tazs.id"), nullable=False)
 
-    # Relationships
-    taz = sa.orm.relationship("TAZ", back_populates="locations")
-
-    households = sa.orm.relationship("Household", back_populates="location")
+    __table_args__ = (
+        # Create an index for use and parcel_type
+        sa.Index("ix_locations_use_parcel_type", use, parcel_type),
+        # Unique constraint on parcel_id and taz_id
+        sa.UniqueConstraint(
+            "parcel_id", "taz_id", name="uq_locations_parcel_id_taz_id"
+        ),
+    )
 
 
 # Manually override the spatial index to ensure alembic auto-migrations do

@@ -3,6 +3,7 @@ import invoke
 
 from pathlib import Path
 
+from hcme import config
 
 _here = Path(__file__).resolve()
 
@@ -21,7 +22,7 @@ def main():
     pass
 
 
-def cli_proxy_factory(alias, command, help_text=""):
+def cli_proxy_factory(alias, command, help_text="", env_vars={}):
     """Factory to enable forwarding click commands to hard-to-remember alembic and uvicorn commands.
 
     Args:
@@ -36,7 +37,7 @@ def cli_proxy_factory(alias, command, help_text=""):
         args = " ".join(map(lambda x: f'"{x}"' if not x.startswith("-") else x, args))
         cmd = f"{command} {args}".strip()
         click.echo(f"Running : {cmd}")
-        invoke.run(cmd)
+        invoke.run(cmd, env=env_vars)
 
     main.add_command(proxy)
 

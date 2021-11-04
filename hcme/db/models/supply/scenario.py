@@ -12,3 +12,5 @@ class SupplyScenario(Base):
     description = sa.Column(sa.Text, nullable=True)
 
     experiments = relationship("Experiment", back_populates="supply_scenario")
+
+    fleets = relationship("Fleet", back_populates="scenario")

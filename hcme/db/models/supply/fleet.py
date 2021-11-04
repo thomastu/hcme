@@ -12,7 +12,7 @@ class Fleet(Base):
         sa.Integer, sa.ForeignKey("supply_scenarios.id"), primary_key=True
     )
 
-    # Relationships
+    # Back reference to SupplyScenario
     scenario = sa.orm.relationship("SupplyScenario", back_populates="fleets")
 
     # Fleet size

@@ -16,6 +16,9 @@ class TAZ(Base):
         Geometry("MULTIPOLYGON", srid=4326, spatial_index=False), nullable=False
     )
 
+    # Reverse relationship to locations
+    locations = sa.orm.relationship("Location", backref="taz")
+
 
 # Spatial Index on Geometry
 sa.Index("taz_geom_idx", TAZ.geometry, postgresql_using="gist")
