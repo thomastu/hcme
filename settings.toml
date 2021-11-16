@@ -1,9 +1,26 @@
 [hcme]
-DATABASE_URL = "postgresql:///hcme"
-INPUT_DIR = "./data/inputs/"
-OUTPUT_DIR = "./data/output/"
+database_url = "postgresql:///hcme"
+
+# Input data directory
+input_dir = "./data/inputs/"
+
+# Output data directory
+output_dir = "./data/output/"
+
+# Whether to create artifact directories
+create_directories = false
 
     [hcme.input_files]
     apns = "apns.csv"
     aggregated_tazs = "aggregated-taz.kml"
     drivers = "drivers.txt"
+    cities = ""
+    census_blocks = ""
+    apns_geocoded = ""
+    census_blocks_geocoded = ""
+
+    [hcme.artifacts]
+    census_block_address_samples = "census/census_block_address_samples.csv"
+    census_block_centroids = "census/census_block_centroids.csv"
+    census_block_rep_points = "census/census_block_rep_points.csv"
+    
