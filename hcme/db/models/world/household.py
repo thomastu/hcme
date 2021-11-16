@@ -14,5 +14,6 @@ class Household(Base):
     )
 
     location = sa.orm.relationship("Location", backref="households", lazy="joined")
+
     # Reverse relationship to person
     members = sa.orm.relationship("Person", backref="household", lazy="joined")

@@ -16,6 +16,9 @@ class TAZ(Base):
         Geometry("MULTIPOLYGON", srid=4326, spatial_index=False), nullable=False
     )
 
+    # Population
+    # census_population = sa.Column(sa.Integer, nullable=False, default=0)
+
     # Reverse relationship to locations
     locations = sa.orm.relationship("Location", backref="taz")
 

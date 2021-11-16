@@ -4,10 +4,19 @@ import itertools
 from abc import ABC, abstractmethod
 
 from math import ceil
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.dialects import postgresql
 from typing import List, Dict, Iterator, Iterable
 
 from loguru import logger
+
+
+def nan_to_null(df: pd.DataFrame, cols: List = []) -> pd.DataFrame:
+    """Convert NaN values to None."""
+    cols = cols or df.columns
+    for col in cols:
+        df[col] = df[col].where(df[col].notnull(), None)
+    return df
 
 
 def chunk(iterator: Iterator, n: int) -> Iterator:
@@ -180,16 +189,16 @@ class AbstractLoader(ABC):
         """Flush the internal buffer to the database."""
         if self.buffer:
             self.load(self.buffer)
+        self.buffer = []
 
     def __enter__(self):
         return self
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_value, exc_traceback):
         self.flush()
 
     def _make_stmt(self, buffer):
-        to_write = list(buffer)
-        insert_stmt = postgresql.insert(self.model.__table__).values(to_write)
+        insert_stmt = postgresql.insert(self.model.__table__).values(buffer)
         upsert_stmt = insert_stmt.on_conflict_do_update(
             index_elements=self.index_elements or list(self.grain),
             index_where=self.index_where,
@@ -205,11 +214,14 @@ class AbstractLoader(ABC):
         self,
         data: Iterable[Dict],
     ):
-        logger.info("Loading data to {model}", model=self.model.__tablename__)
+        n = 0
         for buffer in chunk(data, self.batch_size):
+            buffer = list(buffer)
+            n += len(buffer)
             upsert = self._make_stmt(buffer)
             self.session.execute(upsert)
             self.session.commit()
+        logger.info("Loaded {n} rows to {model}", n=n, model=self.model.__tablename__)
 
 
 def make_loader(model, grain):

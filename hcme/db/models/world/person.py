@@ -15,6 +15,6 @@ class Person(Base):
     household_id = sa.Column(sa.Integer, sa.ForeignKey("households.id"))
 
     # Foreignkey relationship to Household
-    # household = sa.orm.relationship("Household")
+    trips = sa.orm.relationship("Trip", back_populates="person")
 
     __table_args__ = (Index("ix_person_household_id", household_id),)

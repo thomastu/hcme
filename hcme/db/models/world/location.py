@@ -20,14 +20,29 @@ class Location(Base):
 
     zone_type = sa.Column(sa.String(50), nullable=True)
 
-    residential = sa.Column(sa.Boolean, nullable=False, default=False)
+    residential = sa.Column(sa.Boolean, nullable=False)
+
+    city = sa.Column(sa.String(50), nullable=False)
+
+    zipcode = sa.Column(sa.String(5), nullable=False)
 
     # Weighting for selection.  For residential parcels, this will represent liklihood
     # of selection.  For commercial parcels, will represent liklihood of trip destination.
     weight = sa.Column(sa.Float, nullable=False, default=1)
 
+    # USPS Designation
+    carrier_route_description = sa.Column(sa.String(50), nullable=True)
+
+    carrier_route_id = sa.Column(sa.String(10), nullable=True)
+
+    valid_delivery_area = sa.Column(sa.Boolean, nullable=False, default=False)
+
     # Foreign keys
     taz_id = sa.Column(sa.Integer, sa.ForeignKey("tazs.id"), nullable=False)
+
+    census_block_geoid = sa.Column(
+        sa.String, sa.ForeignKey("census_block.id"), nullable=False
+    )
 
     __table_args__ = (
         # Create an index for use and parcel_type
