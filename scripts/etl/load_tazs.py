@@ -1,4 +1,4 @@
-import fiona
+import sqlalchemy as sa
 import geopandas as gpd
 
 from geoalchemy2 import WKTElement
@@ -28,11 +28,11 @@ def main():
 
     # Write the geopandas dataframe to the taz table
     write_buffer = []
-    update_buffer = []
+    # update_buffer = []
     # Make idempotent
     # Query for existing TAZs with IDs in tazs
 
-    existing_tazs = session.query(TAZ.id).filter(TAZ.id.in_(tazs["id"])).all()
+    # existing_tazs = list(session.execute(sa.select(TAZ).where(TAZ.id.in_(tazs["id"]))))
 
     for _, row in tazs.iterrows():
         row = dict(
@@ -41,13 +41,16 @@ def main():
             geometry=WKTElement(row.geometry.wkt, srid=4326),
         )
         # Skip any rows that already exist
-        if row["id"] in existing_tazs:
-            update_buffer.append(row)
+        q = sa.select(TAZ).where(TAZ.id == row["id"]).exists()
+        taz_exists = session.execute(sa.select(q)).scalar()
+        if taz_exists:
+            # update_buffer.append(row)
+            continue
         else:
             write_buffer.append(row)
 
     session.bulk_insert_mappings(TAZ, write_buffer)
-    session.bulk_update_mappings(TAZ, update_buffer)
+    # session.bulk_update_mappings(TAZ, update_buffer)
     session.commit()
 
 
