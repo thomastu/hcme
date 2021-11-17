@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<households xmlns="http://www.matsim.org/files/dtd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.matsim.org/files/dtd http://www.matsim.org/files/dtd/households_v1.0.xsd">
+    {% for household in households -%}
+    <household id="{{household.id}}">
+        {% if household.members -%}
+        <members>
+            {% for person_id in household.members -%}
+            <personId refId="{{person_id}}"/>        
+            {%- endfor %}
+        </members>
+        {%- endif %}
+        {% if household.vehicles -%}
+        <vehicles>
+            {% for vehicle_id in household.vehicles -%}
+            <vehicleDefinitionId refId="{{vehicle_id}}"/>
+            {%- endfor %}
+        </vehicles>
+        {%- endif %}
+        {% if household.income -%}
+        <income currency="{{household.income_currency or 'usd'}}" period="{{household.income_period or 'year'}}">{{ household.income }}</income>
+        {%- endif %}
+    </household>
+    {%- endfor %}
+</households>

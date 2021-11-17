@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE objectAttributes SYSTEM "http://matsim.org/files/dtd/objectattributes_v1.dtd">
+
+<objectAttributes>
+    {% for person in population %}
+    <object id="{{person.id}}">
+        <attribute name="excluded-modes" class="java.lang.String">{%- if person.excluded_modes -%}"{{ person.excluded_modes | join(',') }}"{%- endif -%}</attribute>
+        <attribute name="rank" class="java.lang.Integer">{{person.rank}}</attribute>
+    </object>
+    {% endfor %}
+</objectAttributes>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE objectattributes SYSTEM "http://www.matsim.org/files/dtd/objectattributes_v1.dtd">
+
+<objectattributes>
+    {% for household in households -%}
+    <object id="{{household.id}}">
+        <attribute name="homecoordx" class="java.lang.Double">{{household.homecoordx}}</attribute>
+        <attribute name="homecoordy" class="java.lang.Double">{{household.homecoordy}}</attribute>
+        <attribute name="housingtype" class="java.lang.String">House</attribute>
+    </object>
+    {%- endfor %}
+</objectattributes>
