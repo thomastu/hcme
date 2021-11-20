@@ -13,7 +13,7 @@ class Household(Base):
         sa.Integer, sa.ForeignKey("locations.id", ondelete="CASCADE")
     )
 
-    location = sa.orm.relationship("Location", backref="households", lazy="joined")
+    location = sa.orm.relationship("Location", backref="households")
 
     # Reverse relationship to person
-    members = sa.orm.relationship("Person", backref="household", lazy="joined")
+    members = sa.orm.relationship("Person", backref="household")

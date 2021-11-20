@@ -10,7 +10,7 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 from .constants import InputRegistry as INPUTS
 
 template_env = Environment(
-    loader=PackageLoader("hcme.beamio", "templates"),
+    loader=PackageLoader("hcme.beam", "templates"),
     autoescape=select_autoescape(["xml"]),
 )
 

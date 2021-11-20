@@ -10,6 +10,10 @@ output_dir = "./data/output/"
 # Whether to create artifact directories
 create_directories = false
 
+beam_dir = ""
+beam_conf = ""
+java_exec_path = "/usr/bin/java"
+
     [hcme.input_files]
     apns = "apns.csv"
     aggregated_tazs = "aggregated-taz.kml"
@@ -23,4 +27,8 @@ create_directories = false
     census_block_address_samples = "census/census_block_address_samples.csv"
     census_block_centroids = "census/census_block_centroids.csv"
     census_block_rep_points = "census/census_block_rep_points.csv"
-    
+    population = "beam/population.xml"
+    households = "beam/households.xml"
+    population_attributes = "beam/populationAttributes.xml"
+    household_attributes = "beam/householdAttributes.xml"
+    vehicles = "beam/vehicles.csv"

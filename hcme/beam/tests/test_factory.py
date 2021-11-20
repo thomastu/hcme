@@ -1,5 +1,5 @@
 from lxml import etree
-from hcme.beamio.factory import TemplateLoader, template_namespaces
+from hcme.beam.factory import TemplateLoader, template_namespaces
 
 data = {
     "population": [
@@ -104,12 +104,15 @@ def test_render_household():
         data["households"]
     )
     for i, household in enumerate(data["households"], 1):
-        assert len(
-            tree.xpath(
-                f"//default:household[{i}]/default:members/default:personId",
-                namespaces=ns,
+        assert (
+            len(
+                tree.xpath(
+                    f"//default:household[{i}]/default:members/default:personId",
+                    namespaces=ns,
+                )
             )
-        ) == len(household["members"])
+            == len(household["members"])
+        )
         assert tree.xpath(
             f"//default:household[{i}]/default:income/text()", namespaces=ns
         )[0] == str(household["income"])

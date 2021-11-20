@@ -25,7 +25,7 @@ A population file follows the following schema:
 from lxml import etree
 from pyproj import Transformer
 
-from hcme.beamio.factory import TemplateLoader
+from hcme.beam.factory import TemplateLoader
 
 
 def create_agent():

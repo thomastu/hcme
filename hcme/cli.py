@@ -3,6 +3,7 @@ import invoke
 
 from pathlib import Path
 
+from hcme.beam import wrapper as beam_wrapper
 from hcme import config
 
 _here = Path(__file__).resolve()
@@ -41,6 +42,8 @@ def cli_proxy_factory(alias, command, help_text="", env_vars={}):
 
     main.add_command(proxy)
 
+
+main.add_command(beam_wrapper.main, name="beam")
 
 cli_proxy_factory("alembic", f"alembic -c {alembic}")
 cli_proxy_factory("migrate", f"alembic -c {alembic} upgrade head")

@@ -54,3 +54,7 @@ for k, v in artifacts.items():
     artifacts[k] = _path
 
 reference_date = _settings.get("reference_date", "2021-03-15")
+
+beam_dir = _settings.get("beam_dir")
+beam_conf = _settings.get("beam_conf")
+java_exec_path = _settings.get("java_exec_path", "java")
