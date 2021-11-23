@@ -51,7 +51,8 @@ class APNBlock(AbstractDataBlock):
         "type": "parcel_type",
         "use": "use",
         "ZONING": "zone_type",
-        "City": "city",
+        "Place Name": "city",
+        "City": "_geocoded_city",
         "Zip": "zipcode",
         "Full FIPS (block)": "census_block_geoid",
         "Carrier Route Description": "carrier_route_description",
@@ -99,6 +100,8 @@ class APNBlock(AbstractDataBlock):
         return df
 
     def clean_postal(self, df):
+        df["city"] = df["city"].fillna(df["_geocoded_city"])
+        df["city"] = df["city"].str.title()
         df["zipcode"] = df["zipcode"].astype(str).str[:5]
         df["valid_delivery_area"] = df["valid_delivery_area"] == "Yes"
         return df

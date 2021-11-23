@@ -104,9 +104,7 @@ geatm_trips = (
 )
 
 
-where_clause = sa.and_(
-    models.Location.id.in_(geatm_trips.subquery()), models.Location.city == "Arcata"
-)
+where_clause = sa.and_(models.Location.id.in_(geatm_trips.subquery()))
 
 
 def WKB_to_xy(wkbelement, transformer=UTM10):
