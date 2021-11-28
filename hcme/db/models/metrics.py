@@ -1,6 +1,8 @@
 import enum
 
+
 import sqlalchemy as sa
+
 from hcme.db import Base
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy_utils.types import ChoiceType
@@ -20,9 +22,27 @@ class Metrics(Base):
 
     data = sa.Column(JSONB, nullable=True)
 
+    export_hooks = sa.Column(JSONB, default=list)
+
     __table_args__ = (
         sa.UniqueConstraint("domain", "name", name="uq_world_metrics_domain_name"),
     )
 
     def __repr__(self):
         return f"<{self.domain}:{self.name} - {self.data}>"
+
+    def export(self, hooks=[]):
+        hooks = [*hooks, *self.export_hooks]
+        for hook in hooks:
+            if isinstance(hook, str):
+                try:
+                    func = __import__(hook)
+                except ImportError:
+                    raise ImportError(f"Invalid export hook: {hook}")
+            elif callable(hook):
+                func = hook
+            else:
+                raise TypeError(f"Invalid export hook: {hook}")
+
+            # Exports are responsible for saving their own data!
+            func(self.data, domain=self.domain, name=self.name)
