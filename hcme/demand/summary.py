@@ -106,7 +106,7 @@ class DemandMatrix:
         )
         return tbl
 
-    def record_metrics(self):
+    def run(self):
         # Create dataframe with grain of hour of day, start location, end location
         gdf = gpd.read_postgis(star, con=engine, geom_col="linear_distance")
 

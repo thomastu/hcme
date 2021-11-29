@@ -10,7 +10,7 @@ hcme = "hcme.cli:main"
 [tool.poetry.plugins] # Optional super table
 
 [tool.poetry.plugins."hcme.exporters"]
-"to_csv" = "hcme.plugins.exporters:metric_to_csv"
+"csv" = "hcme.plugins.exporters:metric_to_csv"
 
 
 [tool.poetry.dependencies]
