@@ -3,21 +3,21 @@ Calculate demand by hour of day and time bin
 
 Create visualization for average distance between top travel nodes.
 """
-import folium
-import pandas as pd
-import numpy as np
-import geopandas as gpd
+from dataclasses import dataclass
+from typing import List
 
-import sqlalchemy as sa
+import folium
 import geoalchemy2 as ga
+import geopandas as gpd
+import numpy as np
+import pandas as pd
+import sqlalchemy as sa
+from hcme.crs import UTM10
+from hcme.db import engine, models
+from hcme.metrics import metric
 from pyproj import Proj
 
-from hcme.metrics import metric
-
-from hcme.db import models, engine
-from hcme.crs import UTM10
-
-from dataclasses import dataclass
+domain = "demand/destination-od-matrix"
 
 Trip = models.Trip
 Person = models.Person
@@ -63,7 +63,50 @@ class DemandMatrix:
     threshold: int = None
     top_n: int = 10
 
-    def __post_init__(self):
+    def _calculate(
+        self,
+        gdf: gpd.GeoDataFrame,
+        hours: List,
+        threshold: int = None,
+        top_n: int = None,
+        gb: str = "destination_city",
+    ):
+        """
+        Calculate origin-destination matrix keeping only cities that have at least ``threshold`` trips as a destination,
+        and only keeping the top ``top_n`` destination cities.
+        """
+        # Filter out all destinations that do not have at least `threshold` trips
+        mask = gdf["hour"].isin(hours)
+        gdf = gdf[mask].copy()
+        trip_counts = gdf.groupby(gb)["id"].count().sort_values(ascending=False)
+        if threshold:
+            trip_counts = trip_counts[trip_counts > threshold]
+        cities = trip_counts.index.tolist()
+        if top_n:
+            cities = cities[:top_n]
+        cities = sorted(cities)
+
+        # Only include cities meeting criteria
+        mask = gdf[gb].isin(cities)
+        gdf = gdf[mask].copy()
+
+        # Now aggregate!
+        pivot = (
+            gdf.groupby(["origin_city", "destination_city"], as_index=False)["id"]
+            .agg({"trips": "count"})
+            .pivot(index="origin_city", columns=gb, values="trips")
+        )
+        # Sort columns by destination count
+        cities = pivot.sum(axis=0).sort_values(ascending=False).index.tolist()
+        return pivot.sort_index()[cities]
+
+    def calculate(self, data, time_bin: str):
+        tbl = self._calculate(
+            data, self.time_bins[time_bin], self.threshold, self.top_n
+        )
+        return tbl
+
+    def record_metrics(self):
         # Create dataframe with grain of hour of day, start location, end location
         gdf = gpd.read_postgis(star, con=engine, geom_col="linear_distance")
 
@@ -74,39 +117,9 @@ class DemandMatrix:
             int
         )
 
-        for label, rng in self.time_bins.items():
-            metric(
-                self._calculate(gdf, rng, self.threshold, self.top_n),
-            )
-        self.data = gdf
+        for time_bin in self.time_bins:
+            description = f"Summary of origin-destinations at the nearest postal city level during the hours of {time_bin}"
 
-    def _calculate(gdf, hours, threshold=None, top_n=None):
-        # Filter out all destinations that do not have at least `threshold` trips
-        mask = gdf["hour"].isin(hours)
-        gdf = gdf[mask].copy()
-        trip_counts = (
-            gdf.groupby("destination_city")["id"].count().sort_values(ascending=False)
-        )
-        if threshold:
-            trip_counts = trip_counts[trip_counts > threshold]
-        cities = trip_counts.index.tolist()
-        if top_n:
-            cities = cities[:top_n]
-        cities = sorted(cities)
-
-        # Only include cities meeting criteria
-        mask = gdf["destination_city"].isin(cities)
-        gdf = gdf[mask].copy()
-
-        # Now aggregate!
-        pivot = (
-            gdf.groupby(["origin_city", "destination_city"], as_index=False)["id"]
-            .agg({"trips": "count"})
-            .pivot(index="origin_city", columns="destination_city", values="trips")
-        )
-        return pivot
-
-
-@metric(domain="demand")
-def am_trip_summary():
-    """City origin/destination trip matrix by AM trips (i.e. trips before Noon)"""
+            metric(domain=domain, name=f"{time_bin}", description=description,)(
+                self.calculate
+            )(gdf, time_bin)

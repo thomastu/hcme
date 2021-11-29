@@ -1,16 +1,17 @@
-import sqlalchemy as sa
-import pandas as pd
 import functools
-
 from dataclasses import dataclass
 from functools import cache, cached_property
-from typing import Literal, Union, List
+from typing import List, Literal, Union
+from collections import OrderedDict
+import pandas as pd
+import sqlalchemy as sa
+from loguru import logger
 
 from hcme import config
 from hcme.db import Base, Session
 from hcme.db.io import make_loader
 from hcme.db.models import Metrics
-
+from hcme.plugins import registry_factory
 
 MetricsLoader = make_loader(
     Metrics,
@@ -21,6 +22,9 @@ MetricsLoader = make_loader(
 )
 
 DEFAULT_DOMAIN = "misc"
+
+
+exporters = registry_factory("hcme.exporters")
 
 
 class Recorder:
@@ -54,13 +58,24 @@ class Recorder:
             )
 
 
-def records_to_csv(data, domain, name):
-    """Export record-format JSON to a CSV."""
-    out_path = config.output_dir / f"{domain}/{name}.csv"
-    pd.DataFrame(data).to_csv(out_path, index=False)
+def export_metric(metric, hooks=[]):
+    hooks = [*hooks, *metric.export_hooks]
+    for hook in hooks:
+        if isinstance(hook, str):
+            try:
+                func = exporters.get(hook)
+            except ImportError:
+                raise ImportError(f"Invalid export hook: {hook}")
+        elif callable(hook):
+            func = hook
+        else:
+            raise TypeError(f"Invalid export hook: {hook}")
+        logger.info("Exporting Metric {self} via {hook}", self=metric, hook=hook)
+        # Exports are responsible for saving their own data!
+        func(metric)
 
 
-def export(name=None, domain=None):
+def export(name=None, domain=None, default_hooks=[]):
     """Export all metrics with the given domain."""
 
     session = Session()
@@ -73,8 +88,8 @@ def export(name=None, domain=None):
     where_clause = sa.and_(True, *conditions)
 
     query = sa.select(Metrics).where(where_clause)
-    for metric in session.execute(query):
-        metric.export()
+    for (metric,) in session.execute(query):
+        export_metric(metric, hooks=default_hooks)
 
 
 def metric(
@@ -129,7 +144,8 @@ def metric(
 
             # Persist data and side effects
             if isinstance(data, pd.DataFrame):
-                recorder.record(data.to_dict(orient="records"), export_hooks)
+                _data = data.to_dict(into=OrderedDict)
+                recorder.record(_data, export_hooks)
             elif isinstance(data, (dict, list, tuple, float, int)):
                 recorder.record(data, export_hooks)
             else:

@@ -7,6 +7,12 @@ authors = ["Thomas Tu <thomasthetu@gmail.com>"]
 [tool.poetry.scripts]
 hcme = "hcme.cli:main"
 
+[tool.poetry.plugins] # Optional super table
+
+[tool.poetry.plugins."hcme.exporters"]
+"to_csv" = "hcme.plugins.exporters:metric_to_csv"
+
+
 [tool.poetry.dependencies]
 python = "^3.9"
 SQLAlchemy = "^1.4.25"
@@ -41,6 +47,7 @@ pygeocodio = "^1.0.1"
 Shapely = "<1.8.0"
 lxml = "^4.6.4"
 pyrosm = "^0.6.1"
+orjson = "^3.6.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
