@@ -14,15 +14,15 @@ class Location(Base):
         Geometry("POINT", spatial_index=False, srid=4326), nullable=False
     )
 
-    use = sa.Column(sa.String(50), nullable=False)
+    use = sa.Column(sa.String(50), nullable=False, index=True)
 
     parcel_type = sa.Column(sa.String(50), nullable=False)
 
     zone_type = sa.Column(sa.String(50), nullable=True)
 
-    residential = sa.Column(sa.Boolean, nullable=False)
+    residential = sa.Column(sa.Boolean, nullable=False, index=True)
 
-    city = sa.Column(sa.String(50), nullable=False)
+    city = sa.Column(sa.String(50), nullable=False, index=True)
 
     zipcode = sa.Column(sa.String(5), nullable=False)
 
