@@ -6,6 +6,7 @@ Factory outputs can be used to create test fixtures, or ready-to-use BEAM input 
 
 from dataclasses import dataclass
 from jinja2 import Environment, PackageLoader, select_autoescape
+from loguru import logger
 
 from .constants import InputRegistry as INPUTS
 
@@ -41,12 +42,16 @@ class TemplateLoader:
     data: dict
 
     def __post_init__(self):
-        self.template = template_env.get_template(template_registry.get(self.template))
+        self.template_name = self.template
+        self.template = template_env.get_template(
+            template_registry.get(self.template_name)
+        )
 
     def write(self, output: str = None):
+        logger.info("Generating {self.template_name} to {f}", f=output)
         stream = self.template.stream(**self.data)
         stream.dump(output)
 
-    def render(self, output: str = None):
+    def render(self):
         document = self.template.render(**self.data)
         return document

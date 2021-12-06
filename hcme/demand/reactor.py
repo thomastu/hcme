@@ -3,24 +3,20 @@ Build and create BEAM input plans
 """
 import csv
 import datetime
+from pathlib import Path
 from typing import Dict, Iterable
 
 import geoalchemy2 as ga
+import numpy as np
 import pandas as pd
 import sqlalchemy as sa
-import numpy as np
-
-
 from hcme.beam.factory import TemplateLoader
+from hcme.config import artifacts
 from hcme.db import Session, models
+from hcme.db.models.world.census_block_demographics import CensusBlockEconomics
+from loguru import logger
 from pyproj import Proj
 from tqdm import tqdm
-
-from hcme.db.models.world.census_block_demographics import CensusBlockEconomics
-
-from hcme.config import artifacts
-
-from loguru import logger
 
 UTM10 = Proj(proj="utm", zone=10, ellps="WGS84")
 
@@ -281,34 +277,39 @@ def generate_person_attributes():
             yield {"id": person.id, "rank": i, "excluded_modes": []}
 
 
-def build_travel_diary(pct_vehicle_ownership: float) -> None:
+def scenario_path(path: Path, scenario_name: str) -> Path:
+    """Insert outputs with a pre-pended scenario name."""
+    new_dir = path.parent / scenario_name / path.name
+    new_dir.mkdir(parents=True, exist_ok=True)
+    return new_dir
+
+
+def build_travel_diary(pct_vehicle_ownership: float, scenario_name: str) -> None:
     """Build a travel diary"""
+
+    # Keys here are used by the template renderers
     data = {
         "population": generate_person_plans(),
         "households": generate_households(pct_vehicle_ownership),
     }
 
-    logger.info("Generating population plans to {f}", f=artifacts.population)
-    TemplateLoader("population", data).write(str(artifacts.population))
-
-    logger.info("Generating households to {f}", f=artifacts.households)
-    TemplateLoader("households", data).write(str(artifacts.households))
-
     attributes = {
-        "households": generate_household_attributes(),
         "population": generate_person_attributes(),
+        "households": generate_household_attributes(),
     }
 
-    logger.info(
-        "Generating household attributes to {f}", f=artifacts.population_attributes
-    )
-    TemplateLoader("population_attributes", attributes).write(
-        str(artifacts.population_attributes)
+    TemplateLoader("population", data).write(
+        scenario_path(artifacts.population, scenario_name)
     )
 
-    logger.info(
-        "Generating household attributes to {f}", f=artifacts.household_attributes
+    TemplateLoader("households", data).write(
+        scenario_path(artifacts.households, scenario_name)
     )
+
+    TemplateLoader("population_attributes", attributes).write(
+        scenario_path(artifacts.population_attributes, scenario_name)
+    )
+
     TemplateLoader("household_attributes", attributes).write(
-        str(artifacts.household_attributes)
+        scenario_path(artifacts.household_attributes, scenario_name)
     )
