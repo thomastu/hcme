@@ -48,6 +48,7 @@ Shapely = "<1.8.0"
 lxml = "^4.6.4"
 pyrosm = "^0.6.1"
 orjson = "^3.6.4"
+selenium = "^4.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
