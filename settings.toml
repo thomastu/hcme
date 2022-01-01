@@ -13,6 +13,7 @@ create_directories = false
 beam_dir = ""
 beam_conf = ""
 java_exec_path = "/usr/bin/java"
+mapbox_token = ""
 
     [hcme.input_files]
     apns = "apns.csv"
@@ -22,6 +23,7 @@ java_exec_path = "/usr/bin/java"
     census_blocks = ""
     apns_geocoded = ""
     census_blocks_geocoded = ""
+    gtfs_dir = ""
 
     [hcme.artifacts]
     census_block_address_samples = "census/census_block_address_samples.csv"

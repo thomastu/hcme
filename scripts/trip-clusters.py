@@ -19,20 +19,35 @@ from sklearn.cluster import DBSCAN, OPTICS
 
 gv.extension("bokeh")
 
+HouseholdLocation = sa.orm.aliased(models.Location)
+Destination = sa.orm.aliased(models.Location)
+Origin = sa.orm.aliased(models.Location)
+
 if __name__ == "__main__":
 
-    population = gpd.read_postgis(
+    trips = gpd.read_postgis(
         sa.select(
+            models.Trip,
             models.Person,
-            models.Location.city,
-            models.Location.coordinates,
-            models.Location.taz_id,
+            
+            HouseholdLocation.city.label("home_city"),
+            HouseholdLocation.coordinates.label("home_coordinates"),
+            HouseholdLocation.taz_id.label("home_taz"),
+        )
+        .join(
+            models.Person, models.Trip.person_id == models.Person.id
         )
         .join(
             models.Household,
             models.Person.household_id == models.Household.id,
         )
-        .join(models.Location, models.Household.location_id == models.Location.id),
+        .join(HouseholdLocation, models.Household.location_id == HouseholdLocation.id
+        ).join(
+            Destination, models.Trip.destination_id == Destination.id
+        ).join(
+            Origin, models.Trip.origin_id == Origin.id
+        )
+        ),
         con=engine,
         geom_col="coordinates",
     )
@@ -40,7 +55,7 @@ if __name__ == "__main__":
     tazs = gpd.read_postgis(sa.select(models.TAZ), con=engine, geom_col="geometry")
 
     taz_most_common_city = (
-        population.sjoin(tazs, predicate="within")[["taz_id", "city", "name"]]
+        trips.sjoin(tazs, predicate="within")[["taz_id", "city", "name"]]
         .groupby("taz_id")["city"]
         .value_counts()
         .rename("count")
@@ -48,11 +63,11 @@ if __name__ == "__main__":
         .drop_duplicates(subset="taz_id", keep="first")
     )
 
-    utm10_coords = population["coordinates"].to_crs(UTM10.crs)
+    utm10_coords = trips["coordinates"].to_crs(UTM10.crs)
 
     # DBSCAN requires coordinate system to show up in units of distance
-    population["x"] = utm10_coords.geometry.x
-    population["y"] = utm10_coords.geometry.y
+    trips["x"] = utm10_coords.geometry.x
+    trips["y"] = utm10_coords.geometry.y
 
     city_taz_mapping = {}
 
@@ -62,7 +77,7 @@ if __name__ == "__main__":
     for city, taz_ids in city_taz_mapping.items():
 
         # Filter Data
-        gdf = population.query("taz_id in @taz_ids").copy()
+        gdf = trips.query("taz_id in @taz_ids").copy()
         gdf["long"] = gdf["coordinates"].geometry.x
         gdf["lat"] = gdf["coordinates"].geometry.y
 
@@ -94,7 +109,7 @@ if __name__ == "__main__":
         ).opts(
             size=8,
             color="cluster_id",
-            cmap="glasbey_hv",
+            cmap="glasbey_hv",from hcme.config import artifacts
             active_tools=["wheel_zoom"],
             width=600,
             height=800,

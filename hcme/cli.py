@@ -1,9 +1,12 @@
 import click
 import invoke
+import sqlalchemy as sa
 
 from pathlib import Path
 
+from hcme.db import models, Session
 from hcme.beam import wrapper as beam_wrapper
+from hcme.metrics import export as export_metrics
 from hcme import config
 
 _here = Path(__file__).resolve()
@@ -44,6 +47,32 @@ def cli_proxy_factory(alias, command, help_text="", env_vars={}):
 
 
 main.add_command(beam_wrapper.main, name="beam")
+
+
+@main.group(invoke_without_command=True)
+@click.pass_context
+def metrics(ctx):
+    if ctx.invoked_subcommand is None:
+        session = Session()
+        metrics = session.execute(sa.select(models.Metrics).order_by("domain"))
+        _domain = ""
+        for (metric,) in metrics:
+            if metric.domain != _domain:
+                click.echo("=" * 15)
+                click.echo(f"Domain: {metric.domain}")
+                click.echo("-" * 15)
+            click.echo(f"{metric.name}: {metric.description}")
+            _domain = metric.domain
+
+
+@metrics.command()
+@click.option("-d", "--domain")
+@click.option("-n", "--name", default="")
+@click.option("-h", "--hooks", default=["csv"], multiple=True)
+def export(domain, name, hooks):
+    """Export metrics"""
+    export_metrics(domain=domain, name=name, default_hooks=hooks)
+
 
 cli_proxy_factory("alembic", f"alembic -c {alembic}")
 cli_proxy_factory("migrate", f"alembic -c {alembic} upgrade head")

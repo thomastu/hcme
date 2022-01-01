@@ -1,4 +1,7 @@
 """WIP: create origin-destination point size plots.
+
+For each spatial origin (e.g. "Arcata") at the city or neighborhood level, draw a map with
+radial arrows pointing to destination clusters and their relative sizes as a function of 24H spatial flow.
 """
 
 from datetime import datetime
