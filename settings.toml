@@ -23,7 +23,7 @@ mapbox_token = ""
     census_blocks = ""
     apns_geocoded = ""
     census_blocks_geocoded = ""
-    gtfs_dir = ""
+    gtfs_dir = "gtfs"
 
     [hcme.artifacts]
     census_block_address_samples = "census/census_block_address_samples.csv"
