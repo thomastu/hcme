@@ -7,6 +7,8 @@ from pathlib import Path
 from hcme.db import models, Session
 from hcme.beam import wrapper as beam_wrapper
 from hcme.metrics import export as export_metrics
+from hcme.scenarios import cli as scenarios_cli
+
 from hcme import config
 
 _here = Path(__file__).resolve()
@@ -47,6 +49,7 @@ def cli_proxy_factory(alias, command, help_text="", env_vars={}):
 
 
 main.add_command(beam_wrapper.main, name="beam")
+main.add_command(scenarios_cli.main, name="scenario")
 
 
 @main.group(invoke_without_command=True)

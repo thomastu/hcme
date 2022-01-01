@@ -50,6 +50,7 @@ pyrosm = "^0.6.1"
 orjson = "^3.6.4"
 selenium = "^4.1.0"
 plotly = "^5.5.0"
+urbanaccess = "^0.2.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
