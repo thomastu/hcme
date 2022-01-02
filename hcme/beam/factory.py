@@ -48,7 +48,11 @@ class TemplateLoader:
         )
 
     def write(self, output: str = None):
-        logger.info("Generating {self.template_name} to {f}", f=output)
+        logger.info(
+            "Generating {template_name} to {f}",
+            f=output,
+            template_name=self.template_name,
+        )
         stream = self.template.stream(**self.data)
         stream.dump(output)
 

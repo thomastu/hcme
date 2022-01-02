@@ -95,7 +95,7 @@ geatm_trips = (
     .join(models.Trip, models.Trip.person_id == models.Person.id)
     .join(destinations, models.Trip.destination_location_id == destinations.id)
     .join(origins, models.Trip.origin_location_id == origins.id)
-    .where(sa.not_(sa.and_(origins.city.in_(cities), destinations.city.in_(cities))))
+    # .where(sa.not_(sa.and_(origins.city.in_(cities), destinations.city.in_(cities))))
     .distinct()
 )
 
@@ -280,8 +280,8 @@ def generate_person_attributes():
 def scenario_path(path: Path, scenario_name: str) -> Path:
     """Insert outputs with a pre-pended scenario name."""
     new_dir = path.parent / scenario_name / path.name
-    new_dir.mkdir(parents=True, exist_ok=True)
-    return new_dir
+    new_dir.parent.mkdir(parents=True, exist_ok=True)
+    return str(new_dir)
 
 
 def build_travel_diary(pct_vehicle_ownership: float, scenario_name: str) -> None:
