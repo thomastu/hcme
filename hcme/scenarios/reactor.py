@@ -1,0 +1,2 @@
+class ScenarioReactor:
+    pass
