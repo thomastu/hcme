@@ -26,6 +26,8 @@ class Metrics(Base):
 
     export_hooks = sa.Column(JSONB, default=list)
 
+    export_kwargs = sa.Column(JSONB, default=dict)
+
     __table_args__ = (
         sa.UniqueConstraint("domain", "name", name="uq_world_metrics_domain_name"),
     )

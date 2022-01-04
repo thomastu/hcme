@@ -43,7 +43,12 @@ class Recorder:
             batch_size=10,
         )
 
-    def record(self, value: Union[float, dict], export_hooks: List[str] = []):
+    def record(
+        self,
+        value: Union[float, dict],
+        export_hooks: List[str] = [],
+        export_kwargs: dict = {},
+    ):
         """Record a metric"""
 
         with self.loader as loader:
@@ -53,6 +58,7 @@ class Recorder:
                     "description": self.description,
                     "provenance": self.provenance,
                     "export_hooks": export_hooks,
+                    "export_kwargs": export_kwargs,
                     **self.grain,
                 }
             )
@@ -64,15 +70,17 @@ def export_metric(metric, hooks=[]):
         if isinstance(hook, str):
             try:
                 func = exporters.get(hook)
+                kwargs = metric.export_kwargs.get(hook, {})
             except ImportError:
                 raise ImportError(f"Invalid export hook: {hook}")
         elif callable(hook):
             func = hook
+            kwargs = metric.export_kwargs.get(hook.__name__, {})
         else:
             raise TypeError(f"Invalid export hook: {hook}")
         logger.info("Exporting Metric {self} via {hook}", self=metric, hook=hook)
         # Exports are responsible for saving their own data!
-        func(metric)
+        func(metric, **kwargs)
 
 
 def export(name=None, domain=None, default_hooks=[]):
@@ -99,6 +107,7 @@ def metric(
     provenance: str = None,
     description: str = None,
     export_hooks: List[str] = [],
+    export_kwargs: dict = {},
 ) -> callable:
     """
     Utiltiy to help record metrics.
@@ -128,6 +137,7 @@ def metric(
         description=description,
         domain=domain,
         export_hooks=export_hooks,
+        export_kwargs=export_kwargs,
     ):
         name = name or function.__name__
         provenance = provenance or function.__module__
@@ -145,9 +155,9 @@ def metric(
             # Persist data and side effects
             if isinstance(data, pd.DataFrame):
                 _data = data.to_dict(into=OrderedDict)
-                recorder.record(_data, export_hooks)
+                recorder.record(_data, export_hooks, export_kwargs)
             elif isinstance(data, (dict, list, tuple, float, int)):
-                recorder.record(data, export_hooks)
+                recorder.record(data, export_hooks, export_kwargs)
             else:
                 raise TypeError(f"{function}")
             return data
