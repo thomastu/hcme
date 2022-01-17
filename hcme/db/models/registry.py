@@ -21,4 +21,6 @@ from .world.census_block_demographics import (
     CensusBlockHousehold,
 )
 
+from .world.network import Node, Link
+
 from .metrics import Metrics
