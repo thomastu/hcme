@@ -1,23 +1,21 @@
 """
 Load county parcel data to locations.
 """
-import pandas as pd
-import geopandas as gpd
-import altair as alt
-import sqlalchemy as sa
-
-from geoalchemy2 import WKTElement
-from sqlalchemy.dialects import postgresql
-from shapely.geometry import Point
 from pathlib import Path
 
-from hcme.db import Session, engine
-from hcme.db.models import Location, TAZ
-from hcme.db.io import make_loader, AbstractDataBlock, nan_to_null, Transform
+import altair as alt
+import geopandas as gpd
+import pandas as pd
+import sqlalchemy as sa
+from geoalchemy2 import WKTElement
+from shapely.geometry import Point
+from sqlalchemy.dialects import postgresql
 
 from hcme.config import input_data
+from hcme.db import Session, engine
+from hcme.db.io import AbstractDataBlock, Transform, make_loader, nan_to_null
+from hcme.db.models import TAZ, Location
 from hcme.utils import assert_depends_on, get_nullable_columns
-
 
 apn_fp = input_data.apns_geocoded
 

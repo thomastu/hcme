@@ -1,13 +1,13 @@
-import sqlalchemy as sa
 import geopandas as gpd
-import numpy as np
-
 import geoviews as gv
 import holoviews as hv
-from hcme.crs import UTM10
-from hcme.db import models, engine
-from hcme.config import artifacts
+import numpy as np
+import sqlalchemy as sa
 from sklearn.cluster import DBSCAN, OPTICS
+
+from hcme.config import artifacts
+from hcme.crs import UTM10
+from hcme.db import engine, models
 
 # Approach for seeding microtransit fleet: For each city-location, create a fleet at weighted population centroid
 # (i.e. weighted by population density)

@@ -8,6 +8,11 @@ import altair as alt
 import geopandas as gpd
 import pandas as pd
 from geoalchemy2 import WKTElement
+from loguru import logger
+from shapely.geometry import Point
+from sqlalchemy.dialects import postgresql
+from tqdm import tqdm
+
 from hcme.config import input_data
 from hcme.db import Session
 from hcme.db.io import AbstractDataBlock, make_loader
@@ -18,10 +23,6 @@ from hcme.db.models.registry import (
     CensusBlockHousehold,
 )
 from hcme.utils import assert_depends_on
-from loguru import logger
-from shapely.geometry import Point
-from sqlalchemy.dialects import postgresql
-from tqdm import tqdm
 
 data = input_data.census_blocks_geocoded
 

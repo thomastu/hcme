@@ -1,6 +1,5 @@
 from lxml import etree
 
-
 NS = "default"
 
 namespaces = {

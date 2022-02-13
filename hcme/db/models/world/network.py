@@ -1,7 +1,7 @@
 import sqlalchemy as sa
-
 from geoalchemy2 import Geometry
-from geoalchemy2.functions import ST_MakeLine, ST_AsEWKT
+from geoalchemy2.functions import ST_AsEWKT, ST_MakeLine
+
 from hcme.db import Base
 
 

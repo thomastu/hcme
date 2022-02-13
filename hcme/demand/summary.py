@@ -12,10 +12,11 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import sqlalchemy as sa
+from pyproj import Proj
+
 from hcme.crs import UTM10
 from hcme.db import engine, models
 from hcme.metrics import metric
-from pyproj import Proj
 
 domain = "demand/destination-od-matrix"
 

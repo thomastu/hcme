@@ -31,14 +31,12 @@ python ogr2poly.py /path/to/shapefile.shp > /path/to/output.poly
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from optparse import OptionParser
 import logging
 import os
 import sys
+from optparse import OptionParser
 
-from osgeo import gdal
-from osgeo import ogr
-from osgeo import osr
+from osgeo import gdal, ogr, osr
 
 # TODO:
 #  check if file exists, make sure field is unique (increment)

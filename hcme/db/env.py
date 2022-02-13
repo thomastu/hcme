@@ -1,13 +1,9 @@
-import sqlalchemy as sa
-
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-from sqlalchemy import Integer, Numeric
-from geoalchemy2.types import Geometry
-
+import sqlalchemy as sa
 from alembic import context
+from geoalchemy2.types import Geometry
+from sqlalchemy import Integer, Numeric, engine_from_config, pool
 
 from hcme.config import database_url
 from hcme.db import Base

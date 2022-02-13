@@ -6,15 +6,13 @@ TODO:
 - Implement tool to track individual journeys from events.
 """
 import click
-import pandas as pd
 import geopandas as gpd
+import pandas as pd
+import plotly.express as px
 import sqlalchemy as sa
 
-import plotly.express as px
-
-from hcme.db import models, engine
-
 from hcme.config import mapbox_token
+from hcme.db import engine, models
 
 px.set_mapbox_access_token(mapbox_token)
 

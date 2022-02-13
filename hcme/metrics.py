@@ -1,8 +1,9 @@
 import functools
+from collections import OrderedDict
 from dataclasses import dataclass
 from functools import cache, cached_property
 from typing import List, Literal, Union
-from collections import OrderedDict
+
 import pandas as pd
 import sqlalchemy as sa
 from loguru import logger

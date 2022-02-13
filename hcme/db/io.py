@@ -1,14 +1,12 @@
-import pandas as pd
 import itertools
-
 from abc import ABC, abstractmethod
-
 from math import ceil
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.dialects import postgresql
-from typing import List, Dict, Iterator, Iterable
+from typing import Dict, Iterable, Iterator, List
 
+import pandas as pd
 from loguru import logger
+from sqlalchemy.dialects import postgresql
+from sqlalchemy.exc import IntegrityError
 
 
 def nan_to_null(df: pd.DataFrame, cols: List = []) -> pd.DataFrame:

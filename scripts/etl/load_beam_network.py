@@ -1,16 +1,17 @@
 """Load the beam network file to re-construct events.
 """
+from pathlib import Path
+
+from geoalchemy2 import WKTElement
+from loguru import logger
+from lxml import etree
+from pyproj import Transformer
+from tqdm import tqdm
+
 from hcme.config import beam_conf
 from hcme.crs import UTM10, WGS84
 from hcme.db import Session, models
 from hcme.db.io import make_loader
-
-from pathlib import Path
-from pyproj import Transformer
-from tqdm import tqdm
-from geoalchemy2 import WKTElement
-from lxml import etree
-from loguru import logger
 
 network_file = Path(beam_conf).parent / "r5/physsim-network.xml"
 

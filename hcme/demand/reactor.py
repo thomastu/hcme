@@ -10,13 +10,14 @@ import geoalchemy2 as ga
 import numpy as np
 import pandas as pd
 import sqlalchemy as sa
+from loguru import logger
+from pyproj import Proj
+from tqdm import tqdm
+
 from hcme.beam.factory import TemplateLoader
 from hcme.config import artifacts
 from hcme.db import Session, models
 from hcme.db.models.world.census_block_demographics import CensusBlockEconomics
-from loguru import logger
-from pyproj import Proj
-from tqdm import tqdm
 
 UTM10 = Proj(proj="utm", zone=10, ellps="WGS84")
 

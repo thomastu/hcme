@@ -1,6 +1,6 @@
-import requests
 import zipfile
 
+import requests
 
 from hcme.config import input_data
 

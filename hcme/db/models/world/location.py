@@ -1,6 +1,6 @@
 import sqlalchemy as sa
-
 from geoalchemy2 import Geometry
+
 from hcme.db import Base
 
 

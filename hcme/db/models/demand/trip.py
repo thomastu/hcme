@@ -1,6 +1,7 @@
 import sqlalchemy as sa
 from geoalchemy2 import Geometry
 from sqlalchemy.orm.relationships import foreign
+
 from hcme.db import Base
 
 

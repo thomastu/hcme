@@ -1,15 +1,14 @@
+from pathlib import Path
+
 import click
 import invoke
 import sqlalchemy as sa
 
-from pathlib import Path
-
-from hcme.db import models, Session
+from hcme import config
 from hcme.beam import wrapper as beam_wrapper
+from hcme.db import Session, models
 from hcme.metrics import export as export_metrics
 from hcme.scenarios import cli as scenarios_cli
-
-from hcme import config
 
 _here = Path(__file__).resolve()
 
