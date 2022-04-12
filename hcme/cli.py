@@ -71,7 +71,7 @@ def metrics(ctx):
 @metrics.command()
 @click.option("-d", "--domain")
 @click.option("-n", "--name", default="")
-@click.option("-h", "--hooks", default=["csv"], multiple=True)
+@click.option("-h", "--hooks", default=[], multiple=True)
 def export(domain, name, hooks):
     """Export metrics"""
     export_metrics(domain=domain, name=name, default_hooks=hooks)
