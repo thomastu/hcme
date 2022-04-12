@@ -1,10 +1,13 @@
 import functools
+import importlib
+import pandas as pd
+import sqlalchemy as sa
+
 from dataclasses import dataclass
 from functools import cache, cached_property
 from typing import List, Literal, Union
 from collections import OrderedDict
-import pandas as pd
-import sqlalchemy as sa
+
 from loguru import logger
 
 from hcme import config
@@ -50,7 +53,6 @@ class Recorder:
         export_kwargs: dict = {},
     ):
         """Record a metric"""
-
         with self.loader as loader:
             loader.stream(
                 {
@@ -65,14 +67,23 @@ class Recorder:
 
 
 def export_metric(metric, hooks=[]):
+
     hooks = [*hooks, *metric.export_hooks]
+
     for hook in hooks:
         if isinstance(hook, str):
             try:
-                func = exporters.get(hook)
-                kwargs = metric.export_kwargs.get(hook, {})
+                try:
+                    func = exporters.get(hook)
+                    kwargs = metric.export_kwargs.get(hook, {})
+                except AttributeError:
+                    m, f = hook.rsplit(".", 1)
+                    func = importlib.import_module(m).__getattribute__(f)
+                    kwargs = metric.export_kwargs.get(func.__name__, {})
+
             except ImportError:
                 raise ImportError(f"Invalid export hook: {hook}")
+
         elif callable(hook):
             func = hook
             kwargs = metric.export_kwargs.get(hook.__name__, {})
@@ -136,7 +147,7 @@ def metric(
         provenance=provenance,
         description=description,
         domain=domain,
-        export_hooks=export_hooks,
+        export_hooks=hooks,
         export_kwargs=export_kwargs,
     ):
         name = name or function.__name__
