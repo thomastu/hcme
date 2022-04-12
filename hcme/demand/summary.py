@@ -112,6 +112,9 @@ class DemandMatrix:
         for time_bin in self.time_bins:
             description = f"Summary of origin-destinations at the nearest postal city level during the hours of {time_bin}"
 
-            metric(domain=domain, name=f"{time_bin}", description=description,)(
-                self.calculate
-            )(gdf, time_bin)
+            metric(
+                domain=domain,
+                name=f"{time_bin}",
+                description=description,
+                export_kwargs={"csv": {"float_format": r"%.0f"}},
+            )(self.calculate)(gdf, time_bin)

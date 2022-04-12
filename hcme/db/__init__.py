@@ -13,7 +13,9 @@ from .models.registry import *
 
 
 def _orjson_serializer(obj):
-    data = orjson.dumps(obj, option=orjson.OPT_SERIALIZE_NUMPY).decode()
+    data = orjson.dumps(
+        obj, option=orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_NON_STR_KEYS
+    ).decode()
     return data
 
 
