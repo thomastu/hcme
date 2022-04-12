@@ -1,7 +1,7 @@
 import os
-
 from pathlib import Path
 from ssl import create_default_context
+
 from dynaconf import Dynaconf, constants
 
 _here = Path(__file__).resolve()

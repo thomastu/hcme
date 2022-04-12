@@ -1,6 +1,6 @@
-import pkg_resources
+from dataclasses import field, make_dataclass
 
-from dataclasses import make_dataclass, field
+import pkg_resources
 
 
 def identity_factory(klass):

@@ -3,6 +3,7 @@ Census data used to generate population attributes.
 Data are at the census block level and represent percentages.
 """
 import sqlalchemy as sa
+
 from hcme.db.abstract import Base
 
 

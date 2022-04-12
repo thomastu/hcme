@@ -1,6 +1,7 @@
 import sqlalchemy as sa
 from geoalchemy2 import Geometry
 from sqlalchemy.orm.relationships import foreign
+
 from hcme.db import Base
 
 
@@ -17,13 +18,10 @@ class Trip(Base):
         nullable=False,
     )
 
-    origin_location_id = sa.Column(
-        sa.Integer, sa.ForeignKey("locations.id"), nullable=False
-    )
+    origin_location_id = sa.Column(sa.Integer, sa.ForeignKey("locations.id"), nullable=False)
 
-    destination_location_id = sa.Column(
-        sa.Integer, sa.ForeignKey("locations.id"), nullable=False
-    )
+    destination_location_id = sa.Column(sa.Integer, sa.ForeignKey("locations.id"), nullable=False)
+
     # Relationship to person
     person = sa.orm.relationship("Person", back_populates="trips")
 

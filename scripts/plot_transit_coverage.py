@@ -1,16 +1,16 @@
 """
 Creates a hexplot showing distance to nearest transit stop to approximate transit deserts.
 """
-import pandas as pd
-import numpy as np
 import geopandas as gpd
-import sqlalchemy as sa
+import numpy as np
+import pandas as pd
 import plotly.express as px
 import plotly.figure_factory as ff
+import sqlalchemy as sa
 
+from hcme.config import input_data, mapbox_token
 from hcme.crs import UTM10
 from hcme.db import engine, models
-from hcme.config import input_data, mapbox_token
 
 px.set_mapbox_access_token(mapbox_token)
 
@@ -56,7 +56,7 @@ fig = ff.create_hexbin_mapbox(
     color="distance_miles",
     agg_func=np.mean,
     color_continuous_scale=px.colors.diverging.Portland,
-    range_color=[0, 3],
+    range_color=[0, 1],
 )
 
 fig.show()

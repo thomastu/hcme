@@ -5,11 +5,10 @@ Revises: 935eb9413d58
 Create Date: 2021-11-02 14:16:26.845208
 
 """
-from alembic import op
+import geoalchemy2
 import sqlalchemy as sa
 import sqlalchemy_utils
-import geoalchemy2
-
+from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.

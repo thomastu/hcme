@@ -1,9 +1,8 @@
 import geopandas as gpd
 import numpy as np
-import sqlalchemy as sa
-
 import plotly.express as px
 import plotly.figure_factory as ff
+import sqlalchemy as sa
 from sqlalchemy.sql.functions import count
 
 from hcme.config import mapbox_token

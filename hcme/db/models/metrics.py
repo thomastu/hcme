@@ -1,13 +1,12 @@
 import enum
-
 from importlib import import_module
 
 import sqlalchemy as sa
-
-from hcme.db import Base
+from loguru import logger
 from sqlalchemy.dialects.postgresql import JSON, JSONB
 from sqlalchemy_utils.types import ChoiceType
-from loguru import logger
+
+from hcme.db import Base
 
 
 class Metrics(Base):

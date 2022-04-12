@@ -1,13 +1,11 @@
-import sqlalchemy as sa
 import geopandas as gpd
-
+import sqlalchemy as sa
 from geoalchemy2 import WKTElement
 
 from hcme.config import input_data
 from hcme.db import Session
 from hcme.db.models.registry import TAZ
 from hcme.utils import assert_depends_on
-
 
 gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
 

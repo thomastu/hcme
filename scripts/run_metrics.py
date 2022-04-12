@@ -3,7 +3,6 @@ Run summary statistics and export data
 """
 
 from hcme.demand import summary
-
 from hcme.metrics import export
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
-from typing import Iterable, List
 from pathlib import Path
+from typing import Iterable, List
 
 from hcme.db import Base
 

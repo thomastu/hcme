@@ -5,6 +5,7 @@ Factory outputs can be used to create test fixtures, or ready-to-use BEAM input 
 """
 
 from dataclasses import dataclass
+
 from jinja2 import Environment, PackageLoader, select_autoescape
 from loguru import logger
 

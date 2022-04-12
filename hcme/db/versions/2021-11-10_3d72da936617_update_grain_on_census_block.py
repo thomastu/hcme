@@ -5,11 +5,10 @@ Revises: a3034f328b4a
 Create Date: 2021-11-10 14:18:41.417991
 
 """
-from alembic import op
+import geoalchemy2
 import sqlalchemy as sa
 import sqlalchemy_utils
-import geoalchemy2
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "3d72da936617"

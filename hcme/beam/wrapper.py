@@ -1,9 +1,10 @@
 import os
+from pathlib import Path
+from subprocess import call
+
 import click
 
-from subprocess import call
-from pathlib import Path
-from hcme.config import beam_dir, java_exec_path, beam_conf
+from hcme.config import beam_conf, beam_dir, java_exec_path
 
 
 def build_cmd(conf, maxram=2):

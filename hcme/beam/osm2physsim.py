@@ -1,9 +1,7 @@
 # Converts an OSM file to a physsim-network.xml input
 import pandas as pd
-
 from lxml import etree
 from pyrosm import OSM
-
 
 # Miles per hour to meters per second
 mph_to_mps = 0.44704

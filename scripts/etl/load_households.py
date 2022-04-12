@@ -19,12 +19,12 @@ from collections import defaultdict
 
 import pandas as pd
 import sqlalchemy as sa
+from tqdm import tqdm
 
 from hcme.config import input_data
 from hcme.db import Session, engine, models
 from hcme.db.io import make_loader
 from hcme.metrics import Recorder
-from tqdm import tqdm
 
 if __name__ == "__main__":
 

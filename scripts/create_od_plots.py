@@ -18,9 +18,10 @@ import pandas as pd
 import panel as pn
 import param
 import sqlalchemy as sa
+from pyproj import Proj
+
 from hcme.db import engine, models
 from hcme.demand import summary as demand_summary
-from pyproj import Proj
 
 gv.extension("bokeh")
 

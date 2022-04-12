@@ -3,12 +3,12 @@ Create a single sample point for each block group in the 2020 census from the AP
 
 The purpose of this is to 
 """
-import pandas as pd
 import geopandas as gpd
-
-from tqdm import tqdm
+import pandas as pd
 from loguru import logger
-from hcme.config import input_data, artifacts
+from tqdm import tqdm
+
+from hcme.config import artifacts, input_data
 
 county_code = "023"
 

@@ -1,3 +1,23 @@
+[tool.black]
+line-length = 99 # override black's default line-length
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.tox
+  | venv
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+# make it compatible with black
+profile = "black"
+
 [tool.poetry]
 name = "hcme"
 version = "0.1.0"
@@ -51,9 +71,13 @@ orjson = "^3.6.4"
 selenium = "^4.1.0"
 plotly = "^5.5.0"
 urbanaccess = "^0.2.2"
+python-igraph = "^0.9.9"
+mapclassify = "^2.4.3"
+geovoronoi = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
+isort = "^5.10.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

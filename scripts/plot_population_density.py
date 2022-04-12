@@ -1,16 +1,16 @@
 """
 Creates a hexplot showing population density.
 """
-import pandas as pd
-import numpy as np
 import geopandas as gpd
-import sqlalchemy as sa
+import numpy as np
+import pandas as pd
 import plotly.express as px
 import plotly.figure_factory as ff
+import sqlalchemy as sa
 
+from hcme.config import input_data, mapbox_token
 from hcme.crs import UTM10
 from hcme.db import engine, models
-from hcme.config import input_data, mapbox_token
 
 px.set_mapbox_access_token(mapbox_token)
 

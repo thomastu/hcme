@@ -1,4 +1,5 @@
 from lxml import etree
+
 from hcme.beam.factory import TemplateLoader, template_namespaces
 
 data = {

@@ -10,13 +10,14 @@ import geoalchemy2 as ga
 import numpy as np
 import pandas as pd
 import sqlalchemy as sa
+from loguru import logger
+from pyproj import Proj
+from tqdm import tqdm
+
 from hcme.beam.factory import TemplateLoader
 from hcme.config import artifacts
 from hcme.db import Session, models
 from hcme.db.models.world.census_block_demographics import CensusBlockEconomics
-from loguru import logger
-from pyproj import Proj
-from tqdm import tqdm
 
 UTM10 = Proj(proj="utm", zone=10, ellps="WGS84")
 
@@ -183,7 +184,7 @@ def generate_person_plans(person_where=None) -> Iterable[Dict]:
 
 
 def generate_households(
-    pct_vehicle_ownership: float, vehicle_type="beamVilleCar"
+    pct_vehicle_ownership: float, vehicle_type="beamVilleCar", scenario_name: str = ""
 ) -> Iterable[Dict]:
     session = Session()
 
@@ -202,7 +203,8 @@ def generate_households(
 
     county_median_income = 40000
 
-    fh = artifacts.vehicles.open("w")
+    # Write vehicles file
+    fh = scenario_path(artifacts.vehicles, scenario_name).open("w")
 
     vehicles_recorder = csv.writer(fh, delimiter=",")
     vehicles_recorder.writerow(["vehicleId", "vehicleTypeId", "householdId"])
@@ -290,7 +292,9 @@ def build_travel_diary(pct_vehicle_ownership: float, scenario_name: str) -> None
     # Keys here are used by the template renderers
     data = {
         "population": generate_person_plans(),
-        "households": generate_households(pct_vehicle_ownership),
+        "households": generate_households(
+            pct_vehicle_ownership, scenario_name=scenario_name
+        ),
     }
 
     attributes = {
