@@ -11,9 +11,7 @@ class Node(Base):
 
     id = sa.Column(sa.Integer, primary_key=True)
 
-    coordinates = sa.Column(
-        Geometry("POINT", spatial_index=False, srid=4326), nullable=False
-    )
+    coordinates = sa.Column(Geometry("POINT", spatial_index=False, srid=4326), nullable=False)
 
 
 F = sa.orm.aliased(Node)
@@ -26,13 +24,9 @@ class Link(Base):
 
     id = sa.Column(sa.Integer, primary_key=True)
 
-    from_node_id = sa.Column(
-        sa.Integer, sa.ForeignKey("nodes.id"), nullable=False, index=True
-    )
+    from_node_id = sa.Column(sa.Integer, sa.ForeignKey("nodes.id"), nullable=False, index=True)
 
-    to_node_id = sa.Column(
-        sa.Integer, sa.ForeignKey("nodes.id"), nullable=False, index=True
-    )
+    to_node_id = sa.Column(sa.Integer, sa.ForeignKey("nodes.id"), nullable=False, index=True)
 
     geometry = sa.orm.column_property(
         sa.select(ST_MakeLine(F.coordinates, T.coordinates))
@@ -40,14 +34,7 @@ class Link(Base):
         .scalar_subquery()
     )
 
-    __table_args__ = (
-        # Unique on from and to node
-        sa.UniqueConstraint(
-            from_node_id,
-            to_node_id,
-            name="uq_links_from_to",
-        ),
-    )
+    # __table_args__ = ()
 
 
 # Manually override the spatial index to ensure alembic auto-migrations do

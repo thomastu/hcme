@@ -17,7 +17,7 @@ network_file = Path(beam_conf).parent / "r5/physsim-network.xml"
 
 # Import all nodes first
 NodeLoader = make_loader(models.Node, grain=["id"])
-LinkLoader = make_loader(models.Link, grain=["from_node_id", "to_node_id"])
+LinkLoader = make_loader(models.Link, grain=["id"])
 
 utm10_to_wgs84 = Transformer.from_crs(UTM10.crs, WGS84.crs)
 
@@ -54,11 +54,9 @@ if __name__ == "__main__":
                 from_node_id=from_node_id,
                 to_node_id=to_node_id,
             )
-            continue
+            # continue
 
         cache.add(key)
-        link_loader.stream(
-            {"id": link_id, "from_node_id": from_node_id, "to_node_id": to_node_id}
-        )
+        link_loader.stream({"id": link_id, "from_node_id": from_node_id, "to_node_id": to_node_id})
 
     link_loader.flush()

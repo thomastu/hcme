@@ -72,6 +72,8 @@ selenium = "^4.1.0"
 plotly = "^5.5.0"
 urbanaccess = "^0.2.2"
 python-igraph = "^0.9.9"
+mapclassify = "^2.4.3"
+geovoronoi = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

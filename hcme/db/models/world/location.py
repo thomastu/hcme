@@ -10,9 +10,7 @@ class Location(Base):
 
     parcel_id = sa.Column(sa.String, unique=True, nullable=False)
 
-    coordinates = sa.Column(
-        Geometry("POINT", spatial_index=False, srid=4326), nullable=False
-    )
+    coordinates = sa.Column(Geometry("POINT", spatial_index=False, srid=4326), nullable=False)
 
     use = sa.Column(sa.String(50), nullable=False, index=True)
 
@@ -40,17 +38,13 @@ class Location(Base):
     # Foreign keys
     taz_id = sa.Column(sa.Integer, sa.ForeignKey("tazs.id"), nullable=False)
 
-    census_block_geoid = sa.Column(
-        sa.String, sa.ForeignKey("census_block.id"), nullable=False
-    )
+    census_block_geoid = sa.Column(sa.String, sa.ForeignKey("census_block.id"), nullable=False)
 
     __table_args__ = (
         # Create an index for use and parcel_type
         sa.Index("ix_locations_use_parcel_type", use, parcel_type),
         # Unique constraint on parcel_id and taz_id
-        sa.UniqueConstraint(
-            "parcel_id", "taz_id", name="uq_locations_parcel_id_taz_id"
-        ),
+        sa.UniqueConstraint("parcel_id", "taz_id", name="uq_locations_parcel_id_taz_id"),
     )
 
 
