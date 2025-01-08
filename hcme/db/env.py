@@ -1,9 +1,9 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
+import sqlalchemy as sa
 from alembic import context
+from geoalchemy2.types import Geometry
+from sqlalchemy import Integer, Numeric, engine_from_config, pool
 
 from hcme.config import database_url
 from hcme.db import Base
@@ -94,6 +94,7 @@ def run_migrations_online():
             connection=connection,
             target_metadata=target_metadata,
             include_object=include_object,
+            compare_type=True,
         )
 
         with context.begin_transaction():

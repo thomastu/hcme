@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE network SYSTEM "http://www.matsim.org/files/dtd/network_v2.dtd">
+<network>
+<nodes>
+{% for node in nodes -%}
+    <node id="{{node.id}}" x="{{node.x}}" y="{{node.y}}"></node>
+{% endfor %}
+</nodes>
+<links>
+{% for link in links -%}
+    <link id ="{{link.id}}" from="{{link.u}}" to="{{link.v}}" length="{{link.length}}" freespeed="{{link.freespeed}}" capacity="{{link.capacity}}" permlanes="{{link.permlanes}}" oneway="1" modes="car,walk">
+        <attributes>
+            <attribute name="origid" class="java.lang.String">{{link.id}}</attribute>
+            <attribute name="type" class="java.lang.String">{{link.highwayType}}</attribute>
+        </attributes>
+    </link>
+{% endfor %}
+</links>
+</network>

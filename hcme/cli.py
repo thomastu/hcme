@@ -1,8 +1,14 @@
-import click
-import invoke
-
 from pathlib import Path
 
+import click
+import invoke
+import sqlalchemy as sa
+
+from hcme import config
+from hcme.beam import wrapper as beam_wrapper
+from hcme.db import Session, models
+from hcme.metrics import export as export_metrics
+from hcme.scenarios import cli as scenarios_cli
 
 _here = Path(__file__).resolve()
 
@@ -21,7 +27,7 @@ def main():
     pass
 
 
-def cli_proxy_factory(alias, command, help_text=""):
+def cli_proxy_factory(alias, command, help_text="", env_vars={}):
     """Factory to enable forwarding click commands to hard-to-remember alembic and uvicorn commands.
 
     Args:
@@ -36,9 +42,38 @@ def cli_proxy_factory(alias, command, help_text=""):
         args = " ".join(map(lambda x: f'"{x}"' if not x.startswith("-") else x, args))
         cmd = f"{command} {args}".strip()
         click.echo(f"Running : {cmd}")
-        invoke.run(cmd)
+        invoke.run(cmd, env=env_vars)
 
     main.add_command(proxy)
+
+
+main.add_command(beam_wrapper.main, name="beam")
+main.add_command(scenarios_cli.main, name="scenario")
+
+
+@main.group(invoke_without_command=True)
+@click.pass_context
+def metrics(ctx):
+    if ctx.invoked_subcommand is None:
+        session = Session()
+        metrics = session.execute(sa.select(models.Metrics).order_by("domain"))
+        _domain = ""
+        for (metric,) in metrics:
+            if metric.domain != _domain:
+                click.echo("=" * 15)
+                click.echo(f"Domain: {metric.domain}")
+                click.echo("-" * 15)
+            click.echo(f"{metric.name}: {metric.description}")
+            _domain = metric.domain
+
+
+@metrics.command()
+@click.option("-d", "--domain")
+@click.option("-n", "--name", default="")
+@click.option("-h", "--hooks", default=[], multiple=True)
+def export(domain, name, hooks):
+    """Export metrics"""
+    export_metrics(domain=domain, name=name, default_hooks=hooks)
 
 
 cli_proxy_factory("alembic", f"alembic -c {alembic}")

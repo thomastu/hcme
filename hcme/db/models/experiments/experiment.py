@@ -1,10 +1,10 @@
 import sqlalchemy as sa
-
 from sqlalchemy.orm import relationship
+
 from hcme.db import Base
 
-from ..supply.scenario import SupplyScenario
 from ..demand.scenario import DemandScenario
+from ..supply.scenario import SupplyScenario
 
 
 class Experiment(Base):
